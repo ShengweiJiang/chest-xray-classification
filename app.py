@@ -5,12 +5,12 @@ from torchvision import models, transforms
 from PIL import Image
 import numpy as np
 
-# 页面设置
+# setting page config
 st.set_page_config(page_title="Chest X-Ray Classifier", layout="wide")
 st.title("🫁 Chest X-Ray Pneumonia Detection")
 st.write("Upload a chest X-ray image to detect pneumonia")
 
-# 加载模型
+# load model with caching
 @st.cache_resource
 def load_model():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -23,7 +23,7 @@ def load_model():
 
 model, device = load_model()
 
-# 图像预处理
+# image transformations
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
@@ -68,7 +68,7 @@ def predict_with_gradcam(img):
     
     return pred_class, pred_prob, cam
 
-# 上传图片
+# picture upload
 uploaded_file = st.file_uploader("Choose an X-ray image", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
@@ -103,7 +103,7 @@ if uploaded_file is not None:
         ax.axis("off")
         st.pyplot(fig)
     
-    # 结果
+    # display results
     st.markdown("---")
     if result == "PNEUMONIA":
         st.error(f"### Prediction: {result} ({pred_prob:.1%})")
